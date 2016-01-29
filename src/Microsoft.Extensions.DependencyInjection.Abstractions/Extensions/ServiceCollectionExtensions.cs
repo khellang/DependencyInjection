@@ -10,6 +10,16 @@ namespace Microsoft.Extensions.DependencyInjection.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static bool IsRegistered<TService>(this IServiceCollection collection)
+        {
+            return collection.IsRegistered(typeof(TService));
+        }
+
+        public static bool IsRegistered(this IServiceCollection collection, Type serviceType)
+        {
+            return collection.Any(d => d.ServiceType == serviceType);
+        }
+
         /// <summary>
         /// Adds the specified <paramref name="descriptor"/> to the <paramref name="collection"/>.
         /// </summary>
@@ -82,7 +92,7 @@ namespace Microsoft.Extensions.DependencyInjection.Extensions
                 throw new ArgumentNullException(nameof(descriptor));
             }
 
-            if (collection.All(d => d.ServiceType != descriptor.ServiceType))
+            if (!collection.IsRegistered(descriptor.ServiceType))
             {
                 collection.Add(descriptor);
                 return true;
