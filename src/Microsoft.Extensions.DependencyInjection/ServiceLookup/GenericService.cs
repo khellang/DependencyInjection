@@ -22,11 +22,16 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
         public IService GetService(Type closedServiceType)
         {
-            Type[] genericArguments = closedServiceType.GetTypeInfo().GenericTypeArguments;
-            Type closedImplementationType =
-                _descriptor.ImplementationType.MakeGenericType(genericArguments);
+            if (_descriptor.ImplementationFactory != null)
+            {
+                return new FactoryService(_descriptor);
+            }
+
+            var genericArguments = closedServiceType.GetTypeInfo().GenericTypeArguments;
+            var closedImplementationType = _descriptor.ImplementationType.MakeGenericType(genericArguments);
 
             var closedServiceDescriptor = new ServiceDescriptor(closedServiceType, closedImplementationType, Lifetime);
+
             return new Service(closedServiceDescriptor);
         }
     }

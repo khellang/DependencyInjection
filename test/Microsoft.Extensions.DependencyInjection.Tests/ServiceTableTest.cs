@@ -55,12 +55,12 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
         }
 
         [Fact]
-        public void Constructor_WithFactory_ThrowsIfServiceTypeIsOpenGeneric()
+        public void Constructor_WithInstance_ThrowsIfServiceTypeIsOpenGeneric()
         {
             // Arrange
             var serviceDescriptors = new[]
             {
-                new ServiceDescriptor(typeof(Tuple<>), _ => new Tuple<int>(1), ServiceLifetime.Transient)
+                new ServiceDescriptor(typeof(Tuple<>), new Tuple<int>(1))
             };
 
             // Act and Assert
